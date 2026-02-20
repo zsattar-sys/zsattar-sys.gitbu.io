@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Clocks</title>
+
+<style>
+/* ===== THEME COLORS ===== */
+:root {
+    --beige: #f5efe6;
+    --brown: #5c4033;
+    --light-brown: #8b6f5a;
+    --blue: #3a7ca5;
+    --card-bg: #fffaf3;
+}
+
+/* ===== PAGE ===== */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--beige);
+    color: var(--brown);
+}
+
+header {
+    text-align: center;
+    padding: 25px;
+    background: var(--brown);
+    color: white;
+    letter-spacing: 1px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+/* ===== GRID ===== */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    padding: 30px;
+}
+
+/* ===== CLOCK CARD ===== */
+.clock-card {
+    background: var(--card-bg);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transition: transform 0.2s ease;
+    border-top: 5px solid var(--blue);
+}
+
+.clock-card:hover {
+    transform: translateY(-5px);
+}
+
+.city {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.time {
+    font-size: 28px;
+    margin-top: 10px;
+    color: var(--blue);
+    font-weight: bold;
+}
+
+.date {
+    font-size: 14px;
+    margin-top: 5px;
+    color: var(--light-brown);
+}
+
+/* ===== FOOTER ===== */
+footer {
+    text-align: center;
+    padding: 15px;
+    background: var(--brown);
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🌍 World Time Dashboard</h1>
+    <p>Live clocks across major global cities</p>
+</header>
+
+<div class="container" id="clocks"></div>
+
+<footer>
+    Live timezone tracker • Built with HTML, CSS & JavaScript
+</footer>
+
+<script>
+
+/* ===== CITY LIST ===== */
+const cities = [
+{ name:"New York", zone:"America/New_York" },
+{ name:"Dallas", zone:"America/Chicago" },
+{ name:"Los Angeles", zone:"America/Los_Angeles" },
+{ name:"Miami", zone:"America/New_York" },
+{ name:"London", zone:"Europe/London" },
+{ name:"Shanghai", zone:"Asia/Shanghai" },
+{ name:"Sydney", zone:"Australia/Sydney" },
+{ name:"Hong Kong", zone:"Asia/Hong_Kong" },
+{ name:"Singapore", zone:"Asia/Singapore" },
+{ name:"Paris", zone:"Europe/Paris" },
+{ name:"Amsterdam", zone:"Europe/Amsterdam" },
+{ name:"Zurich", zone:"Europe/Zurich" },
+{ name:"Cape Town", zone:"Africa/Johannesburg" },
+{ name:"Riyadh", zone:"Asia/Riyadh" },
+{ name:"San Salvador", zone:"America/El_Salvador" },
+{ name:"Sao Paulo", zone:"America/Sao_Paulo" },
+{ name:"Toronto", zone:"America/Toronto" },
+{ name:"Tokyo", zone:"Asia/Tokyo" },
+{ name:"Kuala Lumpur", zone:"Asia/Kuala_Lumpur" },
+{ name:"Islamabad", zone:"Asia/Karachi" },
+{ name:"New Delhi", zone:"Asia/Kolkata" },
+{ name:"Stockholm", zone:"Europe/Stockholm" },
+{ name:"Antwerp", zone:"Europe/Brussels" },
+{ name:"Berlin", zone:"Europe/Berlin" },
+{ name:"Moscow", zone:"Europe/Moscow" },
+{ name:"Venice", zone:"Europe/Rome" }
+];
+
+/* ===== CREATE CLOCKS ===== */
+const container = document.getElementById("clocks");
+
+cities.forEach(city => {
+    const card = document.createElement("div");
+    card.className = "clock-card";
+
+    card.innerHTML = `
+        <div class="city">${city.name}</div>
+        <div class="time" id="time-${city.name}">--:--:--</div>
+        <div class="date" id="date-${city.name}"></div>
+    `;
+
+    container.appendChild(card);
+});
+
+/* ===== UPDATE TIMES ===== */
+function updateClocks() {
+    cities.forEach(city => {
+
+        const now = new Date();
+
+        const timeFormatter = new Intl.DateTimeFormat("en-US", {
+            timeZone: city.zone,
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: true
+        });
+
+        const dateFormatter = new Intl.DateTimeFormat("en-US", {
+            timeZone: city.zone,
+            weekday: "short",
+            month: "short",
+            day: "numeric"
+        });
+
+        document.getElementById(`time-${city.name}`).textContent =
+            timeFormatter.format(now);
+
+        document.getElementById(`date-${city.name}`).textContent =
+            dateFormatter.format(now);
+    });
+}
+
+/* update every second */
+setInterval(updateClocks, 1000);
+updateClocks();
+
+</script>
+
+</body>
+</html>
